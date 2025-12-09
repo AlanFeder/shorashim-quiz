@@ -282,11 +282,16 @@
                 return requiredParts.every(req => userParts.includes(req));
             }
 
-            // OR Logic (Slash in correct answer) -> Must provide AT LEAST ONE valid part
+            // OR Logic (Slash in correct answer) -> All provided parts must be valid options
             if (normCorrect.includes('/')) {
                 const acceptedOptions = getParts(normCorrect);
                 const userParts = getParts(normUser);
-                return userParts.some(part => acceptedOptions.includes(part));
+                
+                // Must have at least one answer
+                if (userParts.length === 0) return false;
+
+                // FIX: Instead of .some() (is any part correct?), use .every() (is every part correct?)
+                return userParts.every(part => acceptedOptions.includes(part));
             }
 
             // Simple match
