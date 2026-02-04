@@ -374,25 +374,30 @@
             const normUser = normalize(userInput);
             const normCorrect = normalize(correct);
             
-            // AND Logic (Comma in correct answer) -> Must provide ALL parts
-            if (normCorrect.includes(',')) {
-                const requiredParts = getParts(normCorrect);
-                const userParts = getParts(normUser);
-                return requiredParts.every(req => userParts.includes(req));
-            }
+            // 1. Validate that the user didn't type anything completely unrelated
+            // Get all allowed words from the correct answer (splitting by BOTH comma and slash)
+            const allAllowedParts = getParts(normCorrect);
+            const userParts = getParts(normUser);
+            
+            if (userParts.length === 0) return false;
 
-            // OR Logic (Slash in correct answer) -> All provided parts must be valid options
-            if (normCorrect.includes('/')) {
-                const acceptedOptions = getParts(normCorrect);
-                const userParts = getParts(normUser);
+            // Strict check: Every word the user typed must be SOMEWHERE in the correct answer
+            const isNoExtraInfo = userParts.every(part => allAllowedParts.includes(part));
+            if (!isNoExtraInfo) return false;
+
+            // 2. Check Completeness (The "AND" Rule)
+            // The answer is split by COMMAS into "Required Groups"
+            // Example: "A, B/C" -> Group 1 is "A", Group 2 is "B/C"
+            const requiredGroups = normCorrect.split(',');
+
+            return requiredGroups.every(group => {
+                // Inside each group, split by SLASH to get the valid options
+                // Example Group "B/C" -> options ["b", "c"]
+                const groupOptions = getParts(group);
                 
-                if (userParts.length === 0) return false;
-
-                return userParts.every(part => acceptedOptions.includes(part));
-            }
-
-            // Simple match
-            return normUser === normCorrect;
+                // The user must have typed AT LEAST ONE of these options
+                return groupOptions.some(opt => userParts.includes(opt));
+            });
         };
 
         // --- APP COMPONENT ---
@@ -657,5 +662,3 @@
     </script>
 </body>
 </html>
-
-
