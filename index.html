@@ -419,12 +419,9 @@
                 );
             };
 
-            const selectAll = () => {
-                if (selectedWeeks.length === availableWeeks.length) {
-                    setSelectedWeeks([]);
-                } else {
-                    setSelectedWeeks(availableWeeks);
-                }
+            const selectRange = (max) => {
+                const range = availableWeeks.filter(w => w <= max);
+                setSelectedWeeks(range);
             };
 
             const startGame = () => {
@@ -502,9 +499,18 @@
                             <p className="text-gray-400 text-sm mt-1">Select the lists you want to study</p>
                         </div>
 
-                        <div className="flex justify-center mb-4">
-                            <button onClick={selectAll} className="text-sm text-blue-600 hover:text-blue-800 font-medium">
-                                {selectedWeeks.length === availableWeeks.length ? 'Deselect All' : 'Select All'}
+                        <div className="flex flex-wrap justify-center gap-3 mb-6">
+                            <button onClick={() => selectRange(10)} className="px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-100 transition-colors border border-blue-100">
+                                1-10
+                            </button>
+                            <button onClick={() => selectRange(20)} className="px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-100 transition-colors border border-blue-100">
+                                1-20
+                            </button>
+                            <button onClick={() => selectRange(30)} className="px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-100 transition-colors border border-blue-100">
+                                1-30
+                            </button>
+                            <button onClick={() => setSelectedWeeks([])} className="px-3 py-1.5 text-gray-500 hover:text-gray-700 text-sm font-medium transition-colors">
+                                Clear
                             </button>
                         </div>
 
