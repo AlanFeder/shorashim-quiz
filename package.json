@@ -11,8 +11,8 @@
     "test": "node --test tools/security.test.mjs"
   },
   "dependencies": {
-    "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
   },
   "devDependencies": {
     "esbuild": "0.28.2",
